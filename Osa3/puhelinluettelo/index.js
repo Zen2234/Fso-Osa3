@@ -1,11 +1,14 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const path = require('path')
+
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 app.use(morgan('tiny'))
+app.use(express.static('dist'))
 
 const persons = [
   { id: 1, name: 'Arto Hellas', number: '040-123456' },
@@ -64,7 +67,6 @@ app.post('/api/persons', (req, res) => {
   res.status(201).json(newPerson)
 })
 
-
 app.get('/info', (req, res) => {
   const now = new Date()
   const personCount = persons.length
@@ -77,9 +79,14 @@ app.get('/info', (req, res) => {
   `)
 })
 
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
 
 
